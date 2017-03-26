@@ -1,3 +1,5 @@
+local state = {}
+
 function state.load()
     splashImage = love.graphics.newImage("res/splash.png")
     startTime = os.time()
@@ -5,10 +7,12 @@ end
 
 function state.update()
     if startTime + 1 < os.time() then
-        loadState("game")
+        enterState("game")
     end
 end
 
 function state.draw()
-    love.graphics.draw(splashImage, 0, 0)
+    love.graphics.draw(splashImage)
 end
+
+return state

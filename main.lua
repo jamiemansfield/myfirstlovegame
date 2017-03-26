@@ -1,25 +1,42 @@
 function love.load()
-    loadState("splash")
+    -- Music
     music = love.audio.newSource("res/waysons_eternal-minds.mp3")
     music:play()
+    
+    registerState("splash")
+    registerState("game")
+    registerState("win")
+    registerState("lose")
+
+    enterState("splash")
 end
 
---- Loads the given state.
+local states = {}
+local state = "splash"
+
+--- Registers the given state.
 -- States are defined by lua files of the same name, under the states
 -- directory.
 -- @param name The name of the state
-function loadState(name)
-    state = {}
-    require("states/".. name)
-    state.load()
+function registerState(name)
+    states[name] = require("states/".. name)
+end
+
+--- Enters the given state.
+-- The state must have already have been registered, using registerState!
+-- @param name The name of the state
+function enterState(name)
+    love.graphics.reset()
+    state = name
+    states[name].load()
 end
 
 function love.update()
-    state.update()
+    states[state].update()
 end
 
 function love.draw()
-    state.draw()
+    states[state].draw()
 end
 
 -- Thanks to http://stackoverflow.com/a/2705804/3341246

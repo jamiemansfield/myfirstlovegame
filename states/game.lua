@@ -1,3 +1,5 @@
+local state = {}
+
 function state.load()
     player = {}
     player.x = 100
@@ -54,12 +56,12 @@ function state.update()
 
     -- Check if the player has won
     if getScore() >= 15 then
-        loadState("win")
+        enterState("win")
     end
 
     -- Check if the player has lost
     if getTimePassed() >= 50 then
-        loadState("lose")
+        enterState("lose")
     end
 end
 
@@ -109,3 +111,5 @@ function checkCollision(player, blob)
            playerBottom > blobTop and
            playerTop < blobBottom 
 end
+
+return state
