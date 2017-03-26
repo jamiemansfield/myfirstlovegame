@@ -11,13 +11,13 @@ function state.enter()
     colours = {
         {r = 255, g = 245, b = 157}, -- yellow 200
         {r = 255, g = 138, b = 101}, -- deep orange 300
+        {r = 255, g = 213, b = 79}, -- amber 300
     }
 
     blobs = {}
     for i = 1,6 do
         blobs[i] = genBlob()
     end
-    lastGen = os.time()
 
     -- blue 200
     love.graphics.setBackgroundColor(144, 202, 249)
@@ -47,11 +47,30 @@ function state.update()
         lastGen = os.time()
     end
 
+    -- first check the size of the last blob
+    if lastBlob.size == "large" then
+        -- generate new blob every 4 seconds
+        if lastGen + 4 < os.time() then
+            blobs[tablelength(blobs) + 1] = genBlob()
+            lastGen = os.time()
+        end
+    else
+        -- generate new blob every 2 seconds
+        if lastGen + 2 < os.time() then
+            blobs[tablelength(blobs) + 1] = genBlob()
+            lastGen = os.time()
+        end
+    end
+
     -- Check for collision
     for i, blob in ipairs(blobs) do
         if checkCollision(player, blob) then
             player.area = player.area + blob.area
-            player.score = player.score + 1
+            if blob.size == "large" then
+                player.score = player.score + 2
+            elseif blob.size == "small" then
+                player.score = player.score + 1
+            end
             table.remove(blobs, i)
         end
     end
@@ -93,7 +112,15 @@ function genBlob()
     blob.x = randomRange(15, love.graphics.getWidth() - 15)
     blob.y = randomRange(15, love.graphics.getHeight() - 15)
     blob.area = 15^2
+    blob.size = "small"
+    if math.random(4) == 4 then
+        blob.area = 30^2
+        blob.size = "large"
+    end
     blob.colour = colours[math.random(tablelength(colours))]
+
+    lastGen = os.time()
+    lastBlob = blob
     return blob
 end
 
