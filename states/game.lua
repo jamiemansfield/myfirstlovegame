@@ -16,6 +16,7 @@ function state.load()
     end
     lastGen = os.time()
 
+    -- blue 200
     love.graphics.setBackgroundColor(144, 202, 249)
 end
 
@@ -34,15 +35,16 @@ function state.update()
         player.x = player.x + player.speed
     end
 
-    -- generate new blob every 6 seconds
-    if lastGen + 6 < os.time() then
+    -- generate new blob every 4 seconds
+    if lastGen + 4 < os.time() then
         blobs[tablelength(blobs) + 1] = genBlob()
         lastGen = os.time()
     end
 
+    -- Check for collision
     for i, blob in ipairs(blobs) do
         if checkCollision(player, blob) then
-            blobs[i] = nil
+            table.remove(blobs, i)
             player.size = player.size + 5
         end
     end
