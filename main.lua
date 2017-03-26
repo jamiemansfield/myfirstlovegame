@@ -19,3 +19,10 @@ end
 function love.draw()
     state.draw()
 end
+
+-- Thanks to http://stackoverflow.com/a/2705804/3341246
+function tablelength(T)
+    local count = 0
+    for _ in pairs(T) do count = count + 1 end
+    return count
+end

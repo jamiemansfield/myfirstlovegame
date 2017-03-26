@@ -18,6 +18,9 @@ function state.load()
 
     -- blue 200
     love.graphics.setBackgroundColor(144, 202, 249)
+
+    -- store start time
+    startTime = os.time()
 end
 
 function state.update()
@@ -48,9 +51,22 @@ function state.update()
             player.size = player.size + 5
         end
     end
+
+    -- Check if the player has won
+    if getScore() >= 1 then
+        loadState("win")
+    end
+
+    -- Check if the player has lost
+    if getTimePassed() >= 50 then
+        loadState("lose")
+    end
 end
 
 function state.draw()
+    love.graphics.print("Time passed: ".. getTimePassed().. "secs", 10, 10)
+    love.graphics.print("Score: ".. getScore(), 10, 23)
+
     for i, blob in ipairs(blobs) do
         love.graphics.setColor(blob.colour.r, blob.colour.g, blob.colour.b)
         love.graphics.circle("fill", blob.x, blob.y, 15, 15)
@@ -60,19 +76,20 @@ function state.draw()
     love.graphics.circle("fill", player.x, player.y, player.size, player.size)
 end
 
+function getScore()
+    return (player.size - 25) / 5
+end
+
+function getTimePassed()
+    return os.time() - startTime
+end
+
 function genBlob()
     local blob = {}
     blob.x = math.random(love.graphics.getWidth() - 30) + 15
     blob.y = math.random(love.graphics.getHeight() - 30) + 15
     blob.colour = colours[math.random(tablelength(colours))]
     return blob
-end
-
--- Thanks to http://stackoverflow.com/a/2705804/3341246
-function tablelength(T)
-    local count = 0
-    for _ in pairs(T) do count = count + 1 end
-    return count
 end
 
 -- Based on code from http://sheepolution.com/learn/book/13
