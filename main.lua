@@ -1,7 +1,6 @@
 function love.load()
-    -- Music
-    music = love.audio.newSource("res/waysons_eternal-minds.mp3")
-    music:play()
+    registerMusic("waysons_eternal-minds")
+    registerMusic("halvorsen_wouldnt-change-it")
     
     registerState("splash")
     registerState("game")
@@ -9,6 +8,8 @@ function love.load()
     registerState("lose")
 
     enterState("splash")
+
+    startMusic()
 end
 
 local states = {}
@@ -33,8 +34,28 @@ function enterState(name)
     states[name].enter()
 end
 
+local music = {}
+local currentlyPlaying = 1
+
+function registerMusic(name)
+    music[tablelength(music) + 1] =  love.audio.newSource("res/".. name.. ".mp3")
+end
+
+function startMusic()
+    currentlyPlaying = math.random(tablelength(music))
+    music[currentlyPlaying]:play()
+end
+
 function love.update()
     states[state].update()
+
+    if music[currentlyPlaying]:isStopped() then
+        local lastPlayed = currentlyPlaying
+        while currentlyPlaying == lastPlayed do
+            currentlyPlaying = math.random(tablelength(music))
+        end
+        music[currentlyPlaying]:play()
+    end
 end
 
 function love.draw()
