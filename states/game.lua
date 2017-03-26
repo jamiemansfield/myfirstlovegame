@@ -53,7 +53,7 @@ function state.update()
     end
 
     -- Check if the player has won
-    if getScore() >= 1 then
+    if getScore() >= 15 then
         loadState("win")
     end
 

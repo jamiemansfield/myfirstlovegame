@@ -1,5 +1,7 @@
 function love.load()
     loadState("splash")
+    music = love.audio.newSource("res/waysons_eternal-minds.mp3")
+    music:play()
 end
 
 --- Loads the given state.
