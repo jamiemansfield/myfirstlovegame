@@ -15,4 +15,7 @@ function state.draw()
     love.graphics.draw(splashImage)
 end
 
+function state.keypressed(key)
+end
+
 return state

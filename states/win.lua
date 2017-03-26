@@ -11,4 +11,10 @@ function state.draw()
     love.graphics.draw(winImage)
 end
 
+function state.keypressed(key)
+    if key == "space" then
+        enterState("game")
+    end
+end
+
 return state

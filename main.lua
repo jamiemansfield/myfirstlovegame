@@ -41,6 +41,10 @@ function love.draw()
     states[state].draw()
 end
 
+function love.keypressed(key)
+    states[state].keypressed(key)
+end
+
 -- Thanks to http://stackoverflow.com/a/2705804/3341246
 function tablelength(T)
     local count = 0

@@ -62,16 +62,17 @@ function state.update()
     -- Check for collision
     for i, blob in ipairs(blobs) do
         if checkCollision(player, blob) then
-            player.area = player.area + blob.area
-            if blob.size == "large" then
-                if blob.type == "good" then
+            if blob.type == "good" then 
+                player.area = player.area + blob.area
+                if blob.size == "large" then
                     player.score = player.score + 2
                 else
-                    player.score = player.score - 2
-                end
-            elseif blob.size == "small" then
-                if blob.type == "good" then
                     player.score = player.score + 1
+                end
+            else
+                player.area = player.area - blob.area
+                if blob.size == "large" then
+                    player.score = player.score - 2
                 else
                     player.score = player.score - 1
                 end
@@ -86,7 +87,7 @@ function state.update()
     end
 
     -- Check if the player has lost
-    if getTimePassed() >= 50 then
+    if getTimePassed() >= 50 or player.score < 0 then
         enterState("lose")
     end
 end
@@ -102,6 +103,9 @@ function state.draw()
 
     love.graphics.setColor(0, 0, 0)
     love.graphics.circle("fill", player.x, player.y, getSize(player), getSize(player))
+end
+
+function state.keypressed(key)
 end
 
 function getTimePassed()
@@ -142,9 +146,9 @@ function checkCollision(player, blob)
     local playerBottom = player.y + getSize(player)
 
     local blobLeft = blob.x
-    local blobRight = blob.x + 15
+    local blobRight = blob.x + getSize(blob)
     local blobTop = blob.y
-    local blobBottom = blob.y + 15
+    local blobBottom = blob.y + getSize(blob)
 
     return playerRight > blobLeft and
            playerLeft < blobRight and
