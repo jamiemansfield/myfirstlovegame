@@ -5,11 +5,14 @@ function state.load()
     player.size = 25
     player.speed = 3
 
+    colours = {
+        {r = 255, g = 245, b = 157}, -- yellow 200
+        {r = 255, g = 138, b = 101}, -- deep orange 300
+    }
+
     blobs = {}
-    for i = 0,6 do
-        blobs[i] = {}
-        blobs[i].x = math.random(love.graphics.getWidth() - 30) + 15
-        blobs[i].y = math.random(love.graphics.getHeight() - 30) + 15
+    for i = 1,6 do
+        blobs[i] = genBlob()
     end
     lastGen = os.time()
 
@@ -31,19 +34,23 @@ function state.update()
         player.x = player.x + player.speed
     end
 
-    -- generate new blob every 9 seconds
-    if lastGen + 9 < os.time() then
-        blob = {}
-        blob.x = math.random(love.graphics.getWidth() - 30) + 15
-        blob.y = math.random(love.graphics.getHeight() - 30) + 15
-        blobs[tablelength(blobs)] = blob
+    -- generate new blob every 6 seconds
+    if lastGen + 6 < os.time() then
+        blobs[tablelength(blobs) + 1] = genBlob()
         lastGen = os.time()
+    end
+
+    for i, blob in ipairs(blobs) do
+        if checkCollision(player, blob) then
+            blobs[i] = nil
+            player.size = player.size + 5
+        end
     end
 end
 
 function state.draw()
-    love.graphics.setColor(255, 255, 255)
     for i, blob in ipairs(blobs) do
+        love.graphics.setColor(blob.colour.r, blob.colour.g, blob.colour.b)
         love.graphics.circle("fill", blob.x, blob.y, 15, 15)
     end
 
@@ -51,9 +58,35 @@ function state.draw()
     love.graphics.circle("fill", player.x, player.y, player.size, player.size)
 end
 
+function genBlob()
+    local blob = {}
+    blob.x = math.random(love.graphics.getWidth() - 30) + 15
+    blob.y = math.random(love.graphics.getHeight() - 30) + 15
+    blob.colour = colours[math.random(tablelength(colours))]
+    return blob
+end
+
 -- Thanks to http://stackoverflow.com/a/2705804/3341246
 function tablelength(T)
     local count = 0
     for _ in pairs(T) do count = count + 1 end
     return count
+end
+
+-- Based on code from http://sheepolution.com/learn/book/13
+function checkCollision(player, blob)
+    local playerLeft = player.x
+    local playerRight = player.x + player.size
+    local playerTop = player.y
+    local playerBottom = player.y + player.size
+
+    local blobLeft = blob.x
+    local blobRight = blob.x + 15
+    local blobTop = blob.y
+    local blobBottom = blob.y + 15
+
+    return playerRight > blobLeft and
+           playerLeft < blobRight and
+           playerBottom > blobTop and
+           playerTop < blobBottom 
 end
