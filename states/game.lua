@@ -1,11 +1,12 @@
 local state = {}
 
-function state.load()
+function state.enter()
     player = {}
     player.x = 100
     player.y = 100
-    player.size = 25
+    player.area = 25^2
     player.speed = 3
+    player.score = 0
 
     colours = {
         {r = 255, g = 245, b = 157}, -- yellow 200
@@ -49,13 +50,14 @@ function state.update()
     -- Check for collision
     for i, blob in ipairs(blobs) do
         if checkCollision(player, blob) then
+            player.area = player.area + blob.area
+            player.score = player.score + 1
             table.remove(blobs, i)
-            player.size = player.size + 5
         end
     end
 
     -- Check if the player has won
-    if getScore() >= 15 then
+    if player.score >= 15 then
         enterState("win")
     end
 
@@ -67,29 +69,30 @@ end
 
 function state.draw()
     love.graphics.print("Time passed: ".. getTimePassed().. "secs", 10, 10)
-    love.graphics.print("Score: ".. getScore(), 10, 23)
+    love.graphics.print("Score: ".. player.score, 10, 23)
 
     for i, blob in ipairs(blobs) do
         love.graphics.setColor(blob.colour.r, blob.colour.g, blob.colour.b)
-        love.graphics.circle("fill", blob.x, blob.y, 15, 15)
+        love.graphics.circle("fill", blob.x, blob.y, getSize(blob), getSize(blob))
     end
 
     love.graphics.setColor(0, 0, 0)
-    love.graphics.circle("fill", player.x, player.y, player.size, player.size)
-end
-
-function getScore()
-    return (player.size - 25) / 5
+    love.graphics.circle("fill", player.x, player.y, getSize(player), getSize(player))
 end
 
 function getTimePassed()
     return os.time() - startTime
 end
 
+function getSize(ob)
+    return math.sqrt(ob.area)
+end
+
 function genBlob()
     local blob = {}
-    blob.x = math.random(love.graphics.getWidth() - 30) + 15
-    blob.y = math.random(love.graphics.getHeight() - 30) + 15
+    blob.x = randomRange(15, love.graphics.getWidth() - 15)
+    blob.y = randomRange(15, love.graphics.getHeight() - 15)
+    blob.area = 15^2
     blob.colour = colours[math.random(tablelength(colours))]
     return blob
 end
@@ -97,9 +100,9 @@ end
 -- Based on code from http://sheepolution.com/learn/book/13
 function checkCollision(player, blob)
     local playerLeft = player.x
-    local playerRight = player.x + player.size
+    local playerRight = player.x + getSize(player)
     local playerTop = player.y
-    local playerBottom = player.y + player.size
+    local playerBottom = player.y + getSize(player)
 
     local blobLeft = blob.x
     local blobRight = blob.x + 15

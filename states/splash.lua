@@ -1,6 +1,6 @@
 local state = {}
 
-function state.load()
+function state.enter()
     splashImage = love.graphics.newImage("res/splash.png")
     startTime = os.time()
 end

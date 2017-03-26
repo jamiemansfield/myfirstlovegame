@@ -1,6 +1,6 @@
 local state = {}
 
-function state.load()
+function state.enter()
     loseImage = love.graphics.newImage("res/gameover.png")
 end
 

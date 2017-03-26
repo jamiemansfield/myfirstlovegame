@@ -1,6 +1,6 @@
 local state = {}
 
-function state.load()
+function state.enter()
     winImage = love.graphics.newImage("res/win.png")
 end
 

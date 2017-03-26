@@ -26,9 +26,11 @@ end
 -- The state must have already have been registered, using registerState!
 -- @param name The name of the state
 function enterState(name)
+    -- this is very important!
+    -- ensures that the win and lose state works properly
     love.graphics.reset()
     state = name
-    states[name].load()
+    states[name].enter()
 end
 
 function love.update()
@@ -44,4 +46,8 @@ function tablelength(T)
     local count = 0
     for _ in pairs(T) do count = count + 1 end
     return count
+end
+
+function randomRange(min, max)
+    return math.random(max - min) + min
 end
