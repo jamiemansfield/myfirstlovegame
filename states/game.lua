@@ -23,7 +23,7 @@ function state.enter()
     end
 
     -- blue 200
-    love.graphics.setBackgroundColor(144, 202, 249)
+    love.graphics.setBackgroundColor(144 / 255, 202 / 255, 249 / 255)
 
     -- store start time
     startTime = os.time()
@@ -97,7 +97,7 @@ function state.draw()
     love.graphics.print("Score: ".. player.score, 10, 23)
 
     for i, blob in ipairs(blobs) do
-        love.graphics.setColor(blob.colour.r, blob.colour.g, blob.colour.b)
+        love.graphics.setColor(blob.colour.r / 255, blob.colour.g / 255, blob.colour.b / 255)
         love.graphics.circle("fill", blob.x, blob.y, getSize(blob), getSize(blob))
     end
 

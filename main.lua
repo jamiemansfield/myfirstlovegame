@@ -38,7 +38,7 @@ local music = {}
 local currentlyPlaying = 1
 
 function registerMusic(name)
-    music[tablelength(music) + 1] =  love.audio.newSource("res/".. name.. ".mp3")
+    music[tablelength(music) + 1] =  love.audio.newSource("res/".. name.. ".mp3", "stream")
 end
 
 function startMusic()
@@ -49,7 +49,7 @@ end
 function love.update()
     states[state].update()
 
-    if music[currentlyPlaying]:isStopped() then
+    if not music[currentlyPlaying]:isPlaying() then
         local lastPlayed = currentlyPlaying
         while currentlyPlaying == lastPlayed do
             currentlyPlaying = math.random(tablelength(music))
